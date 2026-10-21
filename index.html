@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Klip Maker — Editor de Video</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- BARRA SUPERIOR -->
+  <header class="topbar">
+    <div class="brand">
+      <img src="logo.png" alt="Klip Maker Logo" class="brand-logo-img" />
+      <span class="brand-title">Klip <small>Maker</small></span>
+      <input type="text" id="projectName" class="project-name-input" value="Mi Proyecto Klip" title="Nombre del proyecto" />
+    </div>
+
+    <div class="topbar-actions">
+      <label class="btn btn-secondary" for="videoFileInput" title="Cargar archivos de video desde tu PC">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        Importar Video
+      </label>
+      <input type="file" id="videoFileInput" accept="video/*" multiple hidden />
+
+      <label class="btn btn-secondary" for="audioFileInput" title="Cargar música o pista de audio">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18V5l12-2v13"></path>
+          <circle cx="6" cy="18" r="3"></circle>
+          <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+        Importar Música
+      </label>
+      <input type="file" id="audioFileInput" accept="audio/*" hidden />
+
+      <button id="btnLoadDemo" class="btn btn-accent-outline" title="Genera un video de demostración animado para probar todas las funciones al instante">
+        ✨ Cargar Video Demo
+      </button>
+
+      <div class="divider-v"></div>
+
+      <button id="btnUndo" class="btn btn-icon" title="Deshacer (Ctrl+Z)" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 7v6h6"></path>
+          <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path>
+        </svg>
+      </button>
+      <button id="btnRedo" class="btn btn-icon" title="Rehacer (Ctrl+Y)" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 7v6h-6"></path>
+          <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"></path>
+        </svg>
+      </button>
+
+      <div class="divider-v"></div>
+
+      <select id="aspectRatioSelect" class="select-compact" title="Formato y resolución de video (TikTok, Reels, YouTube)">
+        <option value="9:16-fhd" selected>📱 TikTok / Reels / Celular HD (9:16 Vertical)</option>
+        <option value="9:16-hd">📱 TikTok / Reels Rápido (9:16 Vertical)</option>
+        <option value="16:9-fhd">🖥️ YouTube / PC Horizontal (16:9)</option>
+        <option value="16:9-hd">🖥️ Horizontal Estándar (16:9)</option>
+        <option value="4:5-ig">📸 Instagram Retrato (4:5)</option>
+        <option value="1:1-sq">🟦 Cuadrado (1:1)</option>
+      </select>
+
+      <select id="fitModeSelect" class="select-compact" title="Cómo encuadrar la grabación en formato vertical o horizontal">
+        <option value="center" selected>🎯 Solo Centro (Recorte Central Directo)</option>
+        <option value="blur">✨ Centro + Fondo Difuminado (TikTok)</option>
+        <option value="cover">🔲 Rellenar Pantalla Completa</option>
+        <option value="contain">⬛ Mostrar Todo (Bordes Negros)</option>
+      </select>
+
+      <button id="btnExport" class="btn btn-primary" title="Configurar y exportar el video en MP4, AVI o WebM">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Exportar MP4 / Video
+      </button>
+    </div>
+  </header>
+
+  <!-- ÁREA PRINCIPAL DE TRABAJO -->
+  <main class="workspace">
+    <!-- PANEL IZQUIERDO: PESTAÑAS Y PROPIEDADES -->
+    <aside class="sidebar">
+      <nav class="sidebar-tabs">
+        <button class="tab-btn active" data-tab="tab-media">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line></svg>
+          <span>Medios</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-speed">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Encuadre / Vel.</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-gamer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 12h4m-2-2v4"></path><line x1="15" y1="11" x2="15.01" y2="11"></line><line x1="18" y1="13" x2="18.01" y2="13"></line></svg>
+          <span>Gamer / HUD</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-filters">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Filtros</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-transitions">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+          <span>Transiciones</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-text">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+          <span>Texto</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-audio">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+          <span>Audio</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-content">
+        <!-- PESTAÑA 1: MEDIOS -->
+        <section id="tab-media" class="tab-pane active">
+          <div class="pane-header">
+            <h3>Biblioteca de Medios</h3>
+            <p class="pane-subtitle">Arrastra o importa videos y música para agregarlos a la línea de tiempo.</p>
+          </div>
+
+          <div id="dropZone" class="drop-zone">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span>Suelta tus videos o audios aquí</span>
+            <small>MP4, WebM, MOV, MP3, WAV</small>
+          </div>
+
+          <div class="media-list-header">
+            <span>Archivos cargados</span>
+            <span id="mediaCountBadge" class="badge">0</span>
+          </div>
+          <div id="mediaList" class="media-list">
+            <div class="empty-hint">No hay archivos todavía. Importa un video o pulsa <b>"✨ Cargar Video Demo"</b> arriba.</div>
+          </div>
+        </section>
+
+        <!-- PESTAÑA 2: VELOCIDAD Y RECORTE DEL CLIP -->
+        <section id="tab-speed" class="tab-pane">
+          <div class="pane-header">
+            <h3>Velocidad y Recorte</h3>
+            <p class="pane-subtitle" id="speedClipLabel">Selecciona un clip en la línea de tiempo</p>
+          </div>
+
+          <div id="speedControlsWrap" class="controls-group disabled-group">
+            <div class="control-block">
+              <div class="control-label-row">
+                <label>Velocidad de reproducción</label>
+                <span id="speedValueBadge" class="value-pill">1.00x</span>
+              </div>
+              <input type="range" id="clipSpeedSlider" min="0.25" max="4" step="0.05" value="1" />
+              <div class="preset-chips">
+                <button class="chip speed-preset" data-speed="0.25">0.25x (Lento)</button>
+                <button class="chip speed-preset" data-speed="0.5">0.5x</button>
+                <button class="chip speed-preset" data-speed="0.75">0.75x</button>
+                <button class="chip speed-preset active" data-speed="1">1.0x</button>
+                <button class="chip speed-preset" data-speed="1.5">1.5x</button>
+                <button class="chip speed-preset" data-speed="2">2.0x</button>
+                <button class="chip speed-preset" data-speed="3">3.0x</button>
+                <button class="chip speed-preset" data-speed="4">4.0x (Rápido)</button>
+              </div>
+            </div>
+
+            <div class="control-block">
+              <div class="control-label-row">
+                <label>Recorte del Clip Original (Trim)</label>
+              </div>
+              <div class="trim-grid">
+                <div>
+                  <small>Inicio (seg)</small>
+                  <input type="number" id="clipTrimStart" class="input-num" min="0" step="0.1" value="0" />
+                </div>
+                <div>
+                  <small>Fin (seg)</small>
+                  <input type="number" id="clipTrimEnd" class="input-num" min="0.1" step="0.1" value="5" />
+                </div>
+              </div>
+              <div class="trim-summary" id="clipDurationInfo">
+                Duración efectiva en timeline: <strong>5.0s</strong>
+              </div>
+            </div>
+
+            <div class="control-block">
+              <label class="block-title">Encuadre, Posición y Recorte (Estilo CapCut / TikTok)</label>
+              <div class="preset-chips" style="margin-top:0; margin-bottom:10px;">
+                <button id="btnFocusCenter916" class="chip active" title=" Pone el formato en 9:16 vertical y enfoca el centro exacto de la grabación">🎯 Enfocar Centro 9:16</button>
+                <button id="btnCenterClipXY" class="chip" title="Alinea la grabación con la línea central horizontal y vertical">➕ Centrar en Ejes</button>
+                <button id="btnResetCropPan" class="chip" title="Restaurar posición, zoom y recorte al original">🔄 Resetear</button>
+              </div>
+
+              <div class="control-label-row">
+                <label>Zoom / Tamaño del Video</label>
+                <span id="zoomValueBadge" class="value-pill">100%</span>
+              </div>
+              <input type="range" id="clipZoomSlider" min="30" max="350" step="2" value="100" />
+
+              <div class="control-label-row" style="margin-top:8px;">
+                <label>Posición Horizontal (Eje X)</label>
+                <span id="panXValueBadge" class="value-pill">0% (Centro)</span>
+              </div>
+              <input type="range" id="clipPanXSlider" min="-100" max="100" step="1" value="0" />
+
+              <div class="control-label-row" style="margin-top:8px;">
+                <label>Posición Vertical (Eje Y)</label>
+                <span id="panYValueBadge" class="value-pill">0% (Centro)</span>
+              </div>
+              <input type="range" id="clipPanYSlider" min="-100" max="100" step="1" value="0" />
+
+              <div style="margin-top:10px; border-top:1px solid var(--border-color); padding-top:8px;">
+                <label class="block-title">Recortar Bordes de la Grabación (% qué mostrar)</label>
+                <div class="trim-grid">
+                  <div>
+                    <small>Recorte Izq (%)</small>
+                    <input type="number" id="clipCropLeft" class="input-num" min="0" max="45" step="1" value="0" />
+                  </div>
+                  <div>
+                    <small>Recorte Der (%)</small>
+                    <input type="number" id="clipCropRight" class="input-num" min="0" max="45" step="1" value="0" />
+                  </div>
+                  <div>
+                    <small>Recorte Arriba (%)</small>
+                    <input type="number" id="clipCropTop" class="input-num" min="0" max="45" step="1" value="0" />
+                  </div>
+                  <div>
+                    <small>Recorte Abajo (%)</small>
+                    <input type="number" id="clipCropBottom" class="input-num" min="0" max="45" step="1" value="0" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="btn-row" style="margin-top:10px;">
+                <button id="btnFlipH" class="btn btn-secondary btn-sm">↔ Voltear H.</button>
+                <button id="btnFlipV" class="btn btn-secondary btn-sm">↕ Voltear V.</button>
+              </div>
+            </div>
+
+            <div class="control-block">
+              <label class="block-title">Acciones rápidas de segmento</label>
+              <div class="action-grid-2">
+                <button id="btnSidebarSplit" class="btn btn-secondary">✂️ Cortar en cabezal (S)</button>
+                <button id="btnSidebarCopy" class="btn btn-secondary">📋 Copiar parte (Ctrl+C)</button>
+                <button id="btnSidebarPaste" class="btn btn-secondary">📥 Pegar parte (Ctrl+V)</button>
+                <button id="btnSidebarDuplicate" class="btn btn-secondary">➕ Duplicar parte (D)</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PESTAÑA GAMER: MARCOS STREAM Y CAPAS HUD (VIDA / DAÑO / WEBCAM) -->
+        <section id="tab-gamer" class="tab-pane">
+          <div class="pane-header">
+            <h3>🎮 Reels Gamer: Marcos y Capas HUD</h3>
+            <p class="pane-subtitle">Agrega un marco tipo Stream y recuadros extra para mostrar la barra de vida, daño, munición o cámara en juegos Shooter.</p>
+          </div>
+
+          <!-- BLOQUE 1: MARCOS TIPO STREAM / REEL GAMER -->
+          <div class="control-block">
+            <label class="block-title">1. Marco Overlay para Reel Gamer / Stream</label>
+            <div class="preset-grid">
+              <button class="frame-preset-btn active" data-frame="none">Sin Marco</button>
+              <button class="frame-preset-btn" data-frame="neon">⚡ Neón Stream</button>
+              <button class="frame-preset-btn" data-frame="shooter">🎯 Shooter Táctico</button>
+              <button class="frame-preset-btn" data-frame="twitch">💜 Streamer Pro</button>
+              <button class="frame-preset-btn" data-frame="esports">🏆 Esports Gold</button>
+              <label class="frame-preset-btn" for="customFrameInput" style="text-align:center; cursor:pointer;">🖼️ Subir PNG</label>
+              <input type="file" id="customFrameInput" accept="image/*" hidden />
+            </div>
+
+            <div class="color-grid" style="margin-top:10px;">
+              <div>
+                <small>Color Marco</small>
+                <input type="color" id="gamerFrameColor" value="#ff6b00" />
+              </div>
+              <div style="grid-column: span 2;">
+                <small>Texto / Nombre del Canal o Streamer</small>
+                <input type="text" id="gamerChannelTag" class="input-text" placeholder="Ej: @TuCanalGamer" value="" />
+              </div>
+            </div>
+
+            <div style="margin-top:10px; border-top:1px solid var(--border-color); padding-top:8px;">
+              <small style="display:block; margin-bottom:6px; font-weight:600;">Logo / Imagen + Etiqueta del Canal Promocionado (Puedes arrastrarlo en pantalla)</small>
+              <div class="btn-row" style="margin-bottom:8px;">
+                <label for="channelLogoInput" class="btn btn-secondary btn-sm" style="cursor:pointer;">
+                  🖼️ Subir Logo / Imagen
+                </label>
+                <input type="file" id="channelLogoInput" accept="image/*" hidden />
+                <button id="btnRemoveChannelLogo" class="btn btn-danger btn-sm" style="display:none; flex:0 0 auto;">✖ Quitar Logo</button>
+              </div>
+              <div id="channelLogoStatus" style="font-size:11px; margin-bottom:6px; display:none;"></div>
+
+              <div class="control-label-row">
+                <small>Tamaño de Logo / Etiqueta Canal</small>
+                <span id="channelBadgeScaleBadge" class="value-pill">100%</span>
+              </div>
+              <input type="range" id="channelBadgeScale" min="50" max="220" step="5" value="100" />
+
+              <div class="preset-chips" style="margin-top:6px;">
+                <button class="chip channel-pos-btn" data-x="0.5" data-y="0.06">Arriba Centro</button>
+                <button class="chip channel-pos-btn" data-x="0.5" data-y="0.92">Abajo Centro</button>
+                <button class="chip channel-pos-btn" data-x="0.22" data-y="0.06">Arriba Izq.</button>
+                <button class="chip channel-pos-btn" data-x="0.78" data-y="0.06">Arriba Der.</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- BLOQUE 2: CAPAS DE RECUADRO HUD (VIDA, DAÑO, MUNICIÓN, WEBCAM) -->
+          <div class="control-block">
+            <label class="block-title">2. Añadir Capa de Recuadro (Vida / Daño / HUD)</label>
+            <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">
+              Recorta cualquier zona de tu grabación original (ej. barra de vida o daño) y colócala como capa flotante en tu Reel:
+            </p>
+            <div class="action-grid-2">
+              <button class="btn btn-secondary btn-sm hud-preset-add" data-preset="health-bl">❤️ + Vida (Abajo-Izq)</button>
+              <button class="btn btn-secondary btn-sm hud-preset-add" data-preset="ammo-br">💥 + Daño/Armas (Der)</button>
+              <button class="btn btn-secondary btn-sm hud-preset-add" data-preset="health-bc">⚡ + HUD (Abajo-Centro)</button>
+              <button class="btn btn-secondary btn-sm hud-preset-add" data-preset="minimap-tl">🗺️ + Minimapa (Arriba)</button>
+            </div>
+            <button class="btn btn-accent-outline btn-sm hud-preset-add" data-preset="webcam" style="width:100%; margin-top:6px;">
+              📷 + Recuadro Libre / Webcam Stream
+            </button>
+
+            <div id="hudLayersList" style="margin-top:10px; display:flex; flex-direction:column; gap:5px;"></div>
+          </div>
+
+          <!-- EDITOR INTERACTIVO DE LA CAPA HUD SELECCIONADA -->
+          <div id="hudEditorWrap" class="control-block disabled-group">
+            <div class="control-label-row">
+              <label class="block-title" style="margin:0;">Ajustar Recuadro HUD Seleccionado</label>
+              <button id="btnDeleteHudLayer" class="btn btn-danger btn-sm" style="padding:3px 8px;">🗑️ Borrar</button>
+            </div>
+
+            <small style="display:block; color:var(--text-muted); font-size:11px; margin:6px 0 4px;">
+              🎯 Arrastra el recuadro amarillo sobre tu grabación 16:9 para elegir qué mostrar (vida, daño, etc.):
+            </small>
+            <div style="position:relative; width:100%; background:#000; border:1px solid var(--border-color); border-radius:6px; overflow:hidden; margin-bottom:8px;">
+              <canvas id="hudSourcePickerCanvas" width="320" height="180" style="width:100%; display:block; cursor:crosshair;"></canvas>
+            </div>
+
+            <div class="trim-grid">
+              <div>
+                <small>Captura X (%)</small>
+                <input type="range" id="hudSrcX" min="0" max="90" step="0.5" value="2" />
+              </div>
+              <div>
+                <small>Captura Y (%)</small>
+                <input type="range" id="hudSrcY" min="0" max="90" step="0.5" value="80" />
+              </div>
+              <div>
+                <small>Ancho Captura (%)</small>
+                <input type="range" id="hudSrcW" min="5" max="80" step="0.5" value="26" />
+              </div>
+              <div>
+                <small>Alto Captura (%)</small>
+                <input type="range" id="hudSrcH" min="4" max="60" step="0.5" value="16" />
+              </div>
+            </div>
+
+            <div style="margin-top:8px; border-top:1px solid var(--border-color); padding-top:8px;">
+              <div class="control-label-row">
+                <small style="color:var(--text-main); font-weight:600;">Posición y Tamaño en el Reel</small>
+                <button id="btnCenterHudLayerX" class="chip" style="padding:2px 7px;">➕ Centrar X</button>
+              </div>
+              <div class="trim-grid" style="margin-top:4px;">
+                <div>
+                  <small>Posición X (%)</small>
+                  <input type="range" id="hudDestX" min="5" max="95" step="0.5" value="50" />
+                </div>
+                <div>
+                  <small>Posición Y (%)</small>
+                  <input type="range" id="hudDestY" min="5" max="95" step="0.5" value="76" />
+                </div>
+              </div>
+              <div class="control-label-row" style="margin-top:6px;">
+                <small>Tamaño del Recuadro en Pantalla</small>
+                <span id="hudScaleBadge" class="value-pill">45%</span>
+              </div>
+              <input type="range" id="hudDestScale" min="15" max="95" step="1" value="45" />
+            </div>
+
+            <div class="color-grid" style="margin-top:8px;">
+              <div>
+                <small>Borde</small>
+                <input type="color" id="hudBorderColor" value="#ff6b00" />
+              </div>
+              <div>
+                <small>Título Recuadro</small>
+                <input type="text" id="hudLabelText" class="input-text" placeholder="Ej: ❤️ VIDA" value="❤️ VIDA / ESCUDO" />
+              </div>
+              <div>
+                <small>Redondeo</small>
+                <input type="range" id="hudBorderRadius" min="0" max="50" value="10" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PESTAÑA 3: FILTROS VISUALES -->
+        <section id="tab-filters" class="tab-pane">
+          <div class="pane-header">
+            <h3>Filtros y Efectos Visuales</h3>
+            <p class="pane-subtitle">Ajusta el color y estilo del clip seleccionado</p>
+          </div>
+
+          <div id="filterControlsWrap" class="controls-group disabled-group">
+            <div class="control-block">
+              <label class="block-title">Presets de Estilo</label>
+              <div class="preset-grid">
+                <button class="filter-preset-btn active" data-preset="normal">Original</button>
+                <button class="filter-preset-btn" data-preset="cinema">🎬 Cine</button>
+                <button class="filter-preset-btn" data-preset="bw">⚫ B & N</button>
+                <button class="filter-preset-btn" data-preset="vintage">🎞️ Vintage</button>
+                <button class="filter-preset-btn" data-preset="warm">☀️ Cálido</button>
+                <button class="filter-preset-btn" data-preset="cold">❄️ Frío</button>
+                <button class="filter-preset-btn" data-preset="cyber">🟣 Cyberpunk</button>
+                <button class="filter-preset-btn" data-preset="dreamy">✨ Suave</button>
+              </div>
+            </div>
+
+            <div class="control-block">
+              <div class="slider-item">
+                <div class="control-label-row"><label>Brillo</label><span id="valBrightness">100%</span></div>
+                <input type="range" id="fltBrightness" min="20" max="200" value="100" />
+              </div>
+              <div class="slider-item">
+                <div class="control-label-row"><label>Contraste</label><span id="valContrast">100%</span></div>
+                <input type="range" id="fltContrast" min="20" max="200" value="100" />
+              </div>
+              <div class="slider-item">
+                <div class="control-label-row"><label>Saturación</label><span id="valSaturate">100%</span></div>
+                <input type="range" id="fltSaturate" min="0" max="300" value="100" />
+              </div>
+              <div class="slider-item">
+                <div class="control-label-row"><label>Blanco y Negro</label><span id="valGrayscale">0%</span></div>
+                <input type="range" id="fltGrayscale" min="0" max="100" value="0" />
+              </div>
+              <div class="slider-item">
+                <div class="control-label-row"><label>Sepia</label><span id="valSepia">0%</span></div>
+                <input type="range" id="fltSepia" min="0" max="100" value="0" />
+              </div>
+              <div class="slider-item">
+                <div class="control-label-row"><label>Matiz de Color (Hue)</label><span id="valHue">0°</span></div>
+                <input type="range" id="fltHue" min="-180" max="180" value="0" />
+              </div>
+              <div class="slider-item">
+                <div class="control-label-row"><label>Desenfoque (Blur)</label><span id="valBlur">0px</span></div>
+                <input type="range" id="fltBlur" min="0" max="20" step="0.5" value="0" />
+              </div>
+              <div class="slider-item">
+                <div class="control-label-row"><label>Viñeta Oscura</label><span id="valVignette">0%</span></div>
+                <input type="range" id="fltVignette" min="0" max="100" value="0" />
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button id="btnResetFilters" class="btn btn-secondary btn-sm">Restablecer filtros</button>
+              <button id="btnApplyFiltersAll" class="btn btn-accent-outline btn-sm">Aplicar a todos los clips</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- PESTAÑA 4: TRANSICIONES -->
+        <section id="tab-transitions" class="tab-pane">
+          <div class="pane-header">
+            <h3>Transiciones entre Clips</h3>
+            <p class="pane-subtitle">Efecto al entrar o salir del clip seleccionado</p>
+          </div>
+
+          <div id="transitionControlsWrap" class="controls-group disabled-group">
+            <div class="control-block">
+              <label class="block-title">Transición de Entrada (Al iniciar el clip)</label>
+              <div class="transition-grid">
+                <button class="trans-btn active" data-trans="none">Ninguna</button>
+                <button class="trans-btn" data-trans="fade">⬛ Fundido (Fade)</button>
+                <button class="trans-btn" data-trans="flash">⬜ Destello Blanco</button>
+                <button class="trans-btn" data-trans="slide-left">⬅️ Deslizar Izq.</button>
+                <button class="trans-btn" data-trans="slide-right">➡️ Deslizar Der.</button>
+                <button class="trans-btn" data-trans="slide-up">⬆️ Deslizar Arriba</button>
+                <button class="trans-btn" data-trans="zoom-in">🔍 Zoom In</button>
+              </div>
+            </div>
+
+            <div class="control-block">
+              <div class="control-label-row">
+                <label>Duración de la transición</label>
+                <span id="transDurationBadge" class="value-pill">0.6s</span>
+              </div>
+              <input type="range" id="transDurationSlider" min="0.2" max="2.0" step="0.1" value="0.6" />
+            </div>
+
+            <div class="control-block">
+              <label class="checkbox-row">
+                <input type="checkbox" id="chkFadeOutClip" />
+                <span>Añadir Fundido a Negro al final de este clip (Fade Out)</span>
+              </label>
+            </div>
+
+            <button id="btnApplyTransAll" class="btn btn-accent-outline btn-sm" style="width:100%;">
+              Aplicar esta transición a todos los clips
+            </button>
+          </div>
+        </section>
+
+        <!-- PESTAÑA 5: TEXTO SUPERPUESTO -->
+        <section id="tab-text" class="tab-pane">
+          <div class="pane-header">
+            <h3>Texto y Subtítulos</h3>
+            <p class="pane-subtitle">Añade títulos en cualquier momento del video (puedes arrastrarlos sobre el video)</p>
+          </div>
+
+          <button id="btnAddText" class="btn btn-primary" style="width:100%; margin-bottom:14px;">
+            + Añadir Texto en Tiempo Actual
+          </button>
+
+          <div id="textEditorWrap" class="controls-group disabled-group">
+            <div class="control-block">
+              <label class="block-title">Contenido del texto</label>
+              <textarea id="txtContent" rows="2" class="input-text" placeholder="Escribe tu título aquí..."></textarea>
+            </div>
+
+            <div class="control-block">
+              <div class="trim-grid">
+                <div>
+                  <small>Inicio (seg)</small>
+                  <input type="number" id="txtStart" class="input-num" min="0" step="0.1" value="0" />
+                </div>
+                <div>
+                  <small>Fin (seg)</small>
+                  <input type="number" id="txtEnd" class="input-num" min="0.2" step="0.1" value="3" />
+                </div>
+              </div>
+            </div>
+
+            <div class="control-block">
+              <div class="trim-grid">
+                <div>
+                  <small>Fuente</small>
+                  <select id="txtFont" class="select-compact" style="width:100%;">
+                    <option value="Inter, system-ui, sans-serif">Moderna Sans</option>
+                    <option value="'Arial Black', Impact, sans-serif">Impacto / Gruesa</option>
+                    <option value="Georgia, serif">Elegante Serif</option>
+                    <option value="'Courier New', monospace">Máquina de Escribir</option>
+                  </select>
+                </div>
+                <div>
+                  <small>Tamaño (px)</small>
+                  <input type="number" id="txtSize" class="input-num" min="16" max="140" value="48" />
+                </div>
+              </div>
+
+              <div class="color-grid" style="margin-top:10px;">
+                <div>
+                  <small>Color Texto</small>
+                  <input type="color" id="txtColor" value="#ffffff" />
+                </div>
+                <div>
+                  <small>Fondo</small>
+                  <input type="color" id="txtBgColor" value="#000000" />
+                </div>
+                <div>
+                  <small>Opacidad Fondo</small>
+                  <input type="range" id="txtBgOpacity" min="0" max="100" value="55" />
+                </div>
+              </div>
+
+              <div class="control-label-row" style="margin-top:10px;">
+                <label>Animación del Texto</label>
+              </div>
+              <select id="txtAnim" class="select-compact" style="width:100%;">
+                <option value="none">Sin animación</option>
+                <option value="fade">Fundido suave</option>
+                <option value="pop">Efecto Pop (Escala)</option>
+                <option value="slide-up">Subir desde abajo</option>
+              </select>
+            </div>
+
+            <div class="control-block">
+              <label class="block-title">Posición rápida</label>
+              <div class="preset-chips">
+                <button class="chip txt-pos-btn" data-x="0.5" data-y="0.15">Arriba</button>
+                <button class="chip txt-pos-btn" data-x="0.5" data-y="0.5">Centro</button>
+                <button class="chip txt-pos-btn" data-x="0.5" data-y="0.85">Subtítulo (Abajo)</button>
+              </div>
+            </div>
+
+            <button id="btnDeleteText" class="btn btn-danger btn-sm" style="width:100%;">
+              🗑️ Eliminar este Texto
+            </button>
+          </div>
+        </section>
+
+        <!-- PESTAÑA 6: AUDIO -->
+        <section id="tab-audio" class="tab-pane">
+          <div class="pane-header">
+            <h3>Control de Audio y Música</h3>
+            <p class="pane-subtitle">Ajusta el volumen del clip y la música de fondo</p>
+          </div>
+
+          <div class="control-block">
+            <label class="block-title">Audio del Clip de Video Seleccionado</label>
+            <div id="clipAudioWrap" class="disabled-group">
+              <div class="control-label-row">
+                <label>Volumen del Clip</label>
+                <span id="clipVolBadge" class="value-pill">100%</span>
+              </div>
+              <input type="range" id="clipVolumeSlider" min="0" max="100" value="100" />
+              <label class="checkbox-row" style="margin-top:8px;">
+                <input type="checkbox" id="chkMuteClip" />
+                <span>🔇 Silenciar audio original de este clip</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="control-block">
+            <label class="block-title">Pista de Música de Fondo</label>
+            <div id="bgMusicStatus" class="empty-hint" style="margin-bottom:10px;">
+              Sin música cargada. Usa el botón "Importar Música" o genera una pista ambiental.
+            </div>
+            <button id="btnGenSynthMusic" class="btn btn-accent-outline btn-sm" style="width:100%; margin-bottom:10px;">
+              🎵 Generar Ritmo Ambiental de Prueba
+            </button>
+
+            <div id="bgMusicControls" class="disabled-group">
+              <div class="control-label-row">
+                <label>Volumen de Música</label>
+                <span id="bgMusicVolBadge" class="value-pill">60%</span>
+              </div>
+              <input type="range" id="bgMusicVolumeSlider" min="0" max="100" value="60" />
+
+              <label class="checkbox-row" style="margin-top:8px;">
+                <input type="checkbox" id="chkMusicFadeOut" checked />
+                <span>Suavizar volumen al final del video (Fade out)</span>
+              </label>
+
+              <button id="btnRemoveBgMusic" class="btn btn-danger btn-sm" style="width:100%; margin-top:10px;">
+                Quitar música de fondo
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </aside>
+
+    <!-- PANEL CENTRAL: VISTA PREVIA DEL VIDEO -->
+    <section class="preview-stage">
+      <div class="canvas-Viewport" id="canvasViewport">
+        <canvas id="previewCanvas" width="720" height="1280"></canvas>
+        <div id="canvasOverlayHint" class="canvas-overlay-hint">
+          <div class="hint-card">
+            <img src="logo.png" alt="Klip Maker Logo" class="welcome-logo-img" />
+            <h4>Bienvenido a Klip Maker</h4>
+            <p>Importa un video desde tu PC o haz clic en <b>"✨ Cargar Video Demo"</b> para probar el corte, cambio de velocidad, copiado/pegado, filtros y texto en tiempo real.</p>
+            <div class="hint-buttons">
+              <label for="videoFileInput" class="btn btn-primary">📂 Seleccionar Video de mi PC</label>
+              <button id="btnWelcomeDemo" class="btn btn-accent-outline">✨ Probar con Video Demo</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTROLES DEL REPRODUCTOR -->
+      <div class="player-bar">
+        <div class="timecode-box">
+          <span id="currentTimeLabel">00:00.0</span>
+          <span class="time-sep">/</span>
+          <span id="totalTimeLabel">00:00.0</span>
+        </div>
+
+        <div class="transport-controls">
+          <button id="btnSkipStart" class="btn btn-icon" title="Ir al inicio (Home)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg>
+          </button>
+          <button id="btnStepBack" class="btn btn-icon" title="Retroceder 0.5s (Flecha Izq)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 19 2 12 11 5 11 19"></polygon><polygon points="22 19 13 12 22 5 22 19"></polygon></svg>
+          </button>
+          <button id="btnPlayPause" class="btn btn-play" title="Reproducir / Pausar (Espacio)">
+            <svg id="iconPlay" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <svg id="iconPause" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+          </button>
+          <button id="btnStepForward" class="btn btn-icon" title="Avanzar 0.5s (Flecha Der)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 19 22 12 13 5 13 19"></polygon><polygon points="2 19 11 12 2 5 2 19"></polygon></svg>
+          </button>
+          <button id="btnSkipEnd" class="btn btn-icon" title="Ir al final (End)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+          </button>
+        </div>
+
+        <div class="player-right-info" style="display:flex; align-items:center; gap:6px;">
+          <button id="btnToggleCenterGuides" class="chip active" title="Mostrar/ocultar líneas guía centrales Horizontal y Vertical (No salen al exportar)">📐 Ejes Centrales H/V</button>
+          <button id="btnToggleSnapCenter" class="chip active" title="Ajustar con imán al centro horizontal y vertical al mover el video o capas">🧲 Imán Centro</button>
+          <button id="btnToggleSafeZone" class="chip" title="Mostrar zonas seguras de interfaz de TikTok / Reels">📱 Zona TikTok</button>
+          <span id="activeClipBadge" class="status-pill">Sin clip seleccionado</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- PANEL INFERIOR: LÍNEA DE TIEMPO Y HERRAMIENTAS DE CORTE/PEGADO -->
+  <section class="timeline-panel">
+    <!-- BARRA DE HERRAMIENTAS DE TIMELINE -->
+    <div class="timeline-toolbar">
+      <div class="toolbar-group">
+        <button id="btnSplit" class="btn btn-tool" title="Cortar/Dividir clip en la posición del cabezal (Tecla S)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>
+          <span>Cortar (S)</span>
+        </button>
+
+        <button id="btnCopy" class="btn btn-tool" title="Copiar parte seleccionada (Ctrl+C)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <span>Copiar (Ctrl+C)</span>
+        </button>
+
+        <button id="btnPaste" class="btn btn-tool" title="Pegar parte copiada a continuación (Ctrl+V)" disabled>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+          <span>Pegar (Ctrl+V)</span>
+        </button>
+
+        <button id="btnDuplicate" class="btn btn-tool" title="Duplicar parte seleccionada (Tecla D)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Duplicar (D)</span>
+        </button>
+
+        <div class="divider-v"></div>
+
+        <button id="btnMoveLeft" class="btn btn-tool" title="Mover segmento a la izquierda">
+          ⬅ Mover Izq
+        </button>
+        <button id="btnMoveRight" class="btn btn-tool" title="Mover segmento a la derecha">
+          Mover Der ➡
+        </button>
+
+        <div class="divider-v"></div>
+
+        <button id="btnDelete" class="btn btn-tool btn-tool-danger" title="Eliminar elemento seleccionado (Supr)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          <span>Eliminar (Supr)</span>
+        </button>
+      </div>
+
+      <!-- CONTROL RÁPIDO DE VELOCIDAD EN BARRA -->
+      <div class="toolbar-group">
+        <div class="quick-speed-box">
+          <span class="quick-label">⚡ Velocidad:</span>
+          <select id="quickSpeedSelect" class="select-compact" title="Cambiar velocidad del clip seleccionado">
+            <option value="0.25">0.25x</option>
+            <option value="0.5">0.5x</option>
+            <option value="0.75">0.75x</option>
+            <option value="1" selected>1.0x (Normal)</option>
+            <option value="1.25">1.25x</option>
+            <option value="1.5">1.5x</option>
+            <option value="2">2.0x</option>
+            <option value="3">3.0x</option>
+            <option value="4">4.0x</option>
+          </select>
+        </div>
+
+        <div class="zoom-timeline-box">
+          <span class="quick-label">🔍 Zoom Línea:</span>
+          <input type="range" id="timelineZoomSlider" min="25" max="160" value="65" />
+        </div>
+      </div>
+    </div>
+
+    <!-- PISTAS DE LA LÍNEA DE TIEMPO -->
+    <div class="timeline-workspace">
+      <div class="track-headers">
+        <div class="track-header ruler-corner">TIEMPO</div>
+        <div class="track-header"><span>🔤 Títulos / Texto</span></div>
+        <div class="track-header"><span>🎬 Video Principal</span></div>
+        <div class="track-header"><span>🎵 Música / Audio</span></div>
+      </div>
+
+      <div class="timeline-scroll-area" id="timelineScrollArea">
+        <div class="timeline-tracks-inner" id="timelineInner">
+          <!-- Regla de tiempo -->
+          <div class="timeline-ruler" id="timelineRuler"></div>
+
+          <!-- Pista de Texto -->
+          <div class="timeline-track track-text" id="trackText"></div>
+
+          <!-- Pista de Video -->
+          <div class="timeline-track track-video" id="trackVideo"></div>
+
+          <!-- Pista de Audio -->
+          <div class="timeline-track track-audio" id="trackAudio"></div>
+
+          <!-- Cabezal de reproducción (Playhead) -->
+          <div class="playhead" id="playhead" style="left: 0px;">
+            <div class="playhead-cap"></div>
+            <div class="playhead-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL DE CONFIGURACIÓN DE EXPORTACIÓN -->
+  <div id="exportSettingsModal" class="modal-backdrop" style="display:none;">
+    <div class="modal-card" style="width: 460px; text-align: left;">
+      <h3 style="margin-bottom: 6px;">🎬 Guardar y Exportar Video (TikTok / PC)</h3>
+      <p style="margin-bottom: 14px;">Asigna un nombre a tu video, elige dónde guardarlo en tu PC y configura el formato de salida.</p>
+
+      <div class="control-block">
+        <label class="block-title">Nombre del Archivo de Video</label>
+        <input type="text" id="exportFileNameInput" class="input-text" placeholder="Ej: mi-clip-tiktok" value="mi-clip-tiktok" />
+        <label class="checkbox-row" style="margin-top: 8px;">
+          <input type="checkbox" id="chkPickSaveLocation" checked />
+          <span>📂 Elegir carpeta de destino en mi PC ("Guardar como...")</span>
+        </label>
+      </div>
+
+      <div class="control-block">
+        <label class="block-title">Formato de Archivo</label>
+        <select id="exportFormatSelect" class="select-compact" style="width: 100%;">
+          <option value="mp4" selected>MP4 (.mp4) — Directo para TikTok, Reels, Celular y PC</option>
+          <option value="webm">WebM (.webm) — Formato de Alta Compatibilidad sin pérdida</option>
+          <option value="avi">AVI (.avi) — Formato clásico para PC</option>
+        </select>
+      </div>
+
+      <div class="control-block">
+        <label class="block-title">Preset de Formato / Red Social</label>
+        <select id="exportPresetSelect" class="select-compact" style="width: 100%;">
+          <option value="current">Usar formato actual del lienzo</option>
+          <option value="9:16-fhd" selected>📱 TikTok / Reels / Celular HD (720×1280 Vertical 9:16 Oficial)</option>
+          <option value="9:16-hd">📱 TikTok / Reels Ligero (576×1024 Vertical 9:16)</option>
+          <option value="16:9-fhd">🖥️ YouTube / PC Horizontal HD (1280×720 16:9)</option>
+          <option value="16:9-hd">🖥️ Horizontal Estándar (1280×720 16:9)</option>
+          <option value="4:5-ig">📸 Instagram Feed Retrato (720×896 4:5)</option>
+          <option value="1:1-sq">🟦 Cuadrado Redes (720×720 1:1)</option>
+        </select>
+      </div>
+
+      <div class="control-block">
+        <div class="trim-grid">
+          <div>
+            <small>Calidad / Bitrate</small>
+            <select id="exportQualitySelect" class="select-compact" style="width: 100%;">
+              <option value="14000000">Ultra (14 Mbps - Nitidez Total)</option>
+              <option value="8500000" selected>Alta Calidad (8.5 Mbps - Ideal TikTok)</option>
+              <option value="5000000">Estándar (5 Mbps - Ligero)</option>
+            </select>
+          </div>
+          <div>
+            <small>Fotogramas (FPS)</small>
+            <select id="exportFpsSelect" class="select-compact" style="width: 100%;">
+              <option value="30" selected>30 FPS (Estable Anti-Freeze)</option>
+              <option value="60">60 FPS (Ultra Fluido)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+        <button id="btnCloseExportSettings" class="btn btn-secondary">Cancelar</button>
+        <button id="btnStartExportNow" class="btn btn-primary">📂 Elegir Destino y Exportar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE PROGRESO DE EXPORTACIÓN -->
+  <div id="exportModal" class="modal-backdrop" style="display:none;">
+    <div class="modal-card">
+      <h3 id="exportModalTitle">Renderizando tu Video...</h3>
+      <p id="exportModalDesc">Mantén esta pestaña visible mientras se procesa el video y el audio sin cortes.</p>
+      <div class="progress-bar-outer">
+        <div id="exportProgressBar" class="progress-bar-inner" style="width: 0%;"></div>
+      </div>
+      <div class="export-stats">
+        <span id="exportProgressText">0%</span>
+      </div>
+      <div class="modal-actions">
+        <button id="btnCancelExport" class="btn btn-secondary">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENEDOR ACTIVO PARA DECODIFICACIÓN DE VIDEO SIN CONGELAMIENTO (ANTI-FREEZE) -->
+  <div id="hiddenMediaPool" style="position:fixed; bottom:0; right:0; width:2px; height:2px; opacity:0.01; pointer-events:none; overflow:hidden; z-index:-1;"></div>
+
+  <!-- NOTIFICACIÓN TOAST -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="mp4-muxer.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
