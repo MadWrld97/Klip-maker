@@ -102,6 +102,10 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 12h4m-2-2v4"></path><line x1="15" y1="11" x2="15.01" y2="11"></line><line x1="18" y1="13" x2="18.01" y2="13"></line></svg>
           <span>Gamer / HUD</span>
         </button>
+        <button class="tab-btn" data-tab="tab-collage">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="12" x2="21" y2="12"></line><line x1="12" y1="3" x2="12" y2="21"></line></svg>
+          <span>Collage</span>
+        </button>
         <button class="tab-btn" data-tab="tab-filters">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
           <span>Filtros</span>
@@ -274,6 +278,12 @@
               <button class="frame-preset-btn" data-frame="shooter">🎯 Shooter Táctico</button>
               <button class="frame-preset-btn" data-frame="twitch">💜 Streamer Pro</button>
               <button class="frame-preset-btn" data-frame="esports">🏆 Esports Gold</button>
+              <button class="frame-preset-btn" data-frame="cyberpunk">🤖 Cyberpunk</button>
+              <button class="frame-preset-btn" data-frame="fire">🔥 Fuego Rage</button>
+              <button class="frame-preset-btn" data-frame="rgb">🌈 RGB Chroma</button>
+              <button class="frame-preset-btn" data-frame="minimal">✨ Minimal Pro</button>
+              <button class="frame-preset-btn" data-frame="arcade">👾 Retro Arcade</button>
+              <button class="frame-preset-btn" data-frame="cambox">🔴 Stream Live</button>
               <label class="frame-preset-btn" for="customFrameInput" style="text-align:center; cursor:pointer;">🖼️ Subir PNG</label>
               <input type="file" id="customFrameInput" accept="image/*" hidden />
             </div>
@@ -406,6 +416,138 @@
           </div>
         </section>
 
+        <!-- PESTAÑA NUEVA: COLLAGE DE VIDEOS / MULTI-VIDEO PIP -->
+        <section id="tab-collage" class="tab-pane">
+          <div class="pane-header">
+            <h3>🎞️ Collage de Videos (Multi-Video / PIP)</h3>
+            <p class="pane-subtitle">Agrega recuadros con otros videos (cámara secundaria, POV de amigo, pantalla dividida o reacción) igual que con el HUD.</p>
+          </div>
+
+          <div class="control-block">
+            <label class="block-title">1. Elegir Video y Plantilla de Recuadro Collage</label>
+            <div class="btn-row" style="margin-bottom:8px;">
+              <select id="collageVideoSelect" class="select-compact" style="flex:1;">
+                <option value="">(Selecciona un video cargado)</option>
+              </select>
+              <label for="collageFileInput" class="btn btn-secondary btn-sm" style="cursor:pointer; flex:0 0 auto;">
+                📂 + Subir Video
+              </label>
+              <input type="file" id="collageFileInput" accept="video/*" multiple hidden />
+            </div>
+
+            <small style="display:block; color:var(--text-muted); font-size:11px; margin-bottom:6px;">
+              Añadir recuadro con el video elegido en modo:
+            </small>
+            <div class="action-grid-2">
+              <button class="btn btn-secondary btn-sm collage-preset-add" data-preset="split-top">⬆️ Mitad Arriba (Split)</button>
+              <button class="btn btn-secondary btn-sm collage-preset-add" data-preset="split-bottom">⬇️ Mitad Abajo (Split)</button>
+              <button class="btn btn-secondary btn-sm collage-preset-add" data-preset="pip-tr">🖼️ Esquina Sup-Der</button>
+              <button class="btn btn-secondary btn-sm collage-preset-add" data-preset="pip-bl">🖼️ Esquina Inf-Izq</button>
+            </div>
+            <button class="btn btn-primary btn-sm collage-preset-add" data-preset="free-box" style="width:100%; margin-top:6px;">
+              ➕ Añadir Recuadro de Video Libre (Collage)
+            </button>
+
+            <div id="collageLayersList" style="margin-top:10px; display:flex; flex-direction:column; gap:5px;"></div>
+          </div>
+
+          <div id="collageEditorWrap" class="control-block disabled-group">
+            <div class="control-label-row">
+              <label class="block-title" style="margin:0;">Ajustar Recuadro de Video Collage</label>
+              <button id="btnDeleteCollageLayer" class="btn btn-danger btn-sm" style="padding:3px 8px;">🗑️ Borrar</button>
+            </div>
+
+            <div style="margin:6px 0;">
+              <small>Cambiar video de este recuadro:</small>
+              <select id="collageEditMediaSelect" class="select-compact" style="width:100%; margin-top:3px;"></select>
+            </div>
+
+            <small style="display:block; color:var(--text-muted); font-size:11px; margin:6px 0 4px;">
+              🎯 Arrastra el recuadro naranja para elegir qué parte de este video mostrar en el collage:
+            </small>
+            <div style="position:relative; width:100%; background:#000; border:1px solid var(--border-color); border-radius:6px; overflow:hidden; margin-bottom:8px;">
+              <canvas id="collageSourcePickerCanvas" width="320" height="180" style="width:100%; display:block; cursor:crosshair;"></canvas>
+            </div>
+
+            <div class="trim-grid">
+              <div>
+                <small>Captura X (%)</small>
+                <input type="range" id="colSrcX" min="0" max="90" step="0.5" value="0" />
+              </div>
+              <div>
+                <small>Captura Y (%)</small>
+                <input type="range" id="colSrcY" min="0" max="90" step="0.5" value="0" />
+              </div>
+              <div>
+                <small>Ancho Captura (%)</small>
+                <input type="range" id="colSrcW" min="10" max="100" step="0.5" value="100" />
+              </div>
+              <div>
+                <small>Alto Captura (%)</small>
+                <input type="range" id="colSrcH" min="10" max="100" step="0.5" value="100" />
+              </div>
+            </div>
+
+            <div style="margin-top:8px; border-top:1px solid var(--border-color); padding-top:8px;">
+              <div class="control-label-row">
+                <small style="color:var(--text-main); font-weight:600;">Posición y Tamaño en el Lienzo</small>
+                <button id="btnCenterCollageX" class="chip" style="padding:2px 7px;">➕ Centrar X</button>
+              </div>
+              <div class="trim-grid" style="margin-top:4px;">
+                <div>
+                  <small>Posición X (%)</small>
+                  <input type="range" id="colDestX" min="5" max="95" step="0.5" value="50" />
+                </div>
+                <div>
+                  <small>Posición Y (%)</small>
+                  <input type="range" id="colDestY" min="5" max="95" step="0.5" value="25" />
+                </div>
+              </div>
+              <div class="control-label-row" style="margin-top:6px;">
+                <small>Tamaño del Recuadro (%)</small>
+                <span id="colScaleBadge" class="value-pill">60%</span>
+              </div>
+              <input type="range" id="colDestScale" min="15" max="100" step="1" value="60" />
+            </div>
+
+            <div style="margin-top:8px; border-top:1px solid var(--border-color); padding-top:8px;">
+              <div class="trim-grid">
+                <div>
+                  <small>Inicio en Timeline (s)</small>
+                  <input type="number" id="colStart" class="input-num" min="0" step="0.1" value="0" />
+                </div>
+                <div>
+                  <small>Fin en Timeline (s)</small>
+                  <input type="number" id="colEnd" class="input-num" min="0.2" step="0.1" value="10" />
+                </div>
+                <div>
+                  <small>Offset Video (s)</small>
+                  <input type="number" id="colTrimStart" class="input-num" min="0" step="0.1" value="0" />
+                </div>
+                <div>
+                  <small>Volumen Audio (%)</small>
+                  <input type="range" id="colVolume" min="0" max="100" value="0" />
+                </div>
+              </div>
+            </div>
+
+            <div class="color-grid" style="margin-top:8px;">
+              <div>
+                <small>Borde</small>
+                <input type="color" id="colBorderColor" value="#ff6b00" />
+              </div>
+              <div>
+                <small>Etiqueta (Opcional)</small>
+                <input type="text" id="colLabelText" class="input-text" placeholder="Ej: 🎬 CAM 2" value="" />
+              </div>
+              <div>
+                <small>Redondeo</small>
+                <input type="range" id="colBorderRadius" min="0" max="50" value="10" />
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- PESTAÑA 3: FILTROS VISUALES -->
         <section id="tab-filters" class="tab-pane">
           <div class="pane-header">
@@ -487,7 +629,15 @@
                 <button class="trans-btn" data-trans="slide-left">⬅️ Deslizar Izq.</button>
                 <button class="trans-btn" data-trans="slide-right">➡️ Deslizar Der.</button>
                 <button class="trans-btn" data-trans="slide-up">⬆️ Deslizar Arriba</button>
+                <button class="trans-btn" data-trans="slide-down">⬇️ Deslizar Abajo</button>
                 <button class="trans-btn" data-trans="zoom-in">🔍 Zoom In</button>
+                <button class="trans-btn" data-trans="zoom-out">🔎 Zoom Out</button>
+                <button class="trans-btn" data-trans="spin">🌀 Giro Dinámico</button>
+                <button class="trans-btn" data-trans="glitch">⚡ Glitch Gamer</button>
+                <button class="trans-btn" data-trans="wipe-right">🎬 Cortina H.</button>
+                <button class="trans-btn" data-trans="wipe-down">🎬 Cortina V.</button>
+                <button class="trans-btn" data-trans="blur-in">🌫️ Desenfoque</button>
+                <button class="trans-btn" data-trans="shake">💥 Impacto Shake</button>
               </div>
             </div>
 
@@ -600,30 +750,91 @@
           </div>
         </section>
 
-        <!-- PESTAÑA 6: AUDIO -->
+        <!-- PESTAÑA 6: AUDIO, SEPARACIÓN DE AUDIO Y SONIDOS (SFX) -->
         <section id="tab-audio" class="tab-pane">
           <div class="pane-header">
-            <h3>Control de Audio y Música</h3>
-            <p class="pane-subtitle">Ajusta el volumen del clip y la música de fondo</p>
+            <h3>🔊 Audio Separado, Sonidos y Música</h3>
+            <p class="pane-subtitle">Separa el audio del video en su propia línea, agrega efectos de sonido (SFX) y ajusta la música.</p>
           </div>
 
           <div class="control-block">
-            <label class="block-title">Audio del Clip de Video Seleccionado</label>
-            <div id="clipAudioWrap" class="disabled-group">
+            <label class="block-title">1. Separar Audio del Video Principal</label>
+            <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">
+              Extrae el audio del video a la pista inferior de <b>Audio / Sonidos</b> para poder moverlo, cortarlo o editarlo por separado del video:
+            </p>
+            <div class="btn-row">
+              <button id="btnDetachClipAudio" class="btn btn-primary btn-sm" style="flex:1;">
+                🔊 Separar Audio del Clip
+              </button>
+              <button id="btnDetachAllAudio" class="btn btn-secondary btn-sm" style="flex:1;">
+                🔊 Separar Todos
+              </button>
+            </div>
+            <div id="clipAudioWrap" class="disabled-group" style="margin-top:10px;">
               <div class="control-label-row">
-                <label>Volumen del Clip</label>
+                <label>Volumen del Video Seleccionado</label>
                 <span id="clipVolBadge" class="value-pill">100%</span>
               </div>
               <input type="range" id="clipVolumeSlider" min="0" max="100" value="100" />
-              <label class="checkbox-row" style="margin-top:8px;">
+              <label class="checkbox-row" style="margin-top:6px;">
                 <input type="checkbox" id="chkMuteClip" />
-                <span>🔇 Silenciar audio original de este clip</span>
+                <span>🔇 Silenciar audio integrado de este video</span>
               </label>
             </div>
           </div>
 
           <div class="control-block">
-            <label class="block-title">Pista de Música de Fondo</label>
+            <label class="block-title">2. Agregar Sonidos y Efectos Gamer (SFX) a la Línea de Audio</label>
+            <label for="sfxFileInput" class="btn btn-accent-outline btn-sm" style="width:100%; margin-bottom:8px; cursor:pointer; display:flex; justify-content:center;">
+              📂 + Subir Sonido / Efecto (.MP3 / .WAV) en Cabezal
+            </label>
+            <input type="file" id="sfxFileInput" accept="audio/*" multiple hidden />
+
+            <small style="display:block; color:var(--text-muted); font-size:11px; margin-bottom:6px;">
+              Efectos de sonido rápidos (se insertan en la posición actual del cabezal):
+            </small>
+            <div class="preset-grid">
+              <button class="btn btn-secondary btn-sm sfx-add-btn" data-sfx="boom">💥 Boom</button>
+              <button class="btn btn-secondary btn-sm sfx-add-btn" data-sfx="hitmarker">🎯 Hitmarker</button>
+              <button class="btn btn-secondary btn-sm sfx-add-btn" data-sfx="whoosh">⚡ Whoosh</button>
+              <button class="btn btn-secondary btn-sm sfx-add-btn" data-sfx="ding">🔔 Ding Pro</button>
+              <button class="btn btn-secondary btn-sm sfx-add-btn" data-sfx="horn">🚨 Alerta</button>
+              <button class="btn btn-secondary btn-sm sfx-add-btn" data-sfx="laser">👾 Retro Up</button>
+            </div>
+          </div>
+
+          <div id="audioClipEditorWrap" class="control-block disabled-group">
+            <div class="control-label-row">
+              <label class="block-title" id="selectedAudioClipLabel" style="margin:0;">Clip de Audio Seleccionado</label>
+              <button id="btnDeleteAudioClip" class="btn btn-danger btn-sm" style="padding:3px 8px;">🗑️ Borrar</button>
+            </div>
+            <div class="control-label-row" style="margin-top:8px;">
+              <small>Volumen de este Audio</small>
+              <span id="audioClipVolBadge" class="value-pill">100%</span>
+            </div>
+            <input type="range" id="audioClipVolumeSlider" min="0" max="150" value="100" />
+            <div class="trim-grid" style="margin-top:8px;">
+              <div>
+                <small>Posición en Timeline (s)</small>
+                <input type="number" id="audioClipTimelineStart" class="input-num" min="0" step="0.1" value="0" />
+              </div>
+              <div>
+                <small>Velocidad Audio</small>
+                <input type="number" id="audioClipSpeed" class="input-num" min="0.25" max="4" step="0.05" value="1" />
+              </div>
+              <div>
+                <small>Recorte Inicio (s)</small>
+                <input type="number" id="audioClipTrimStart" class="input-num" min="0" step="0.1" value="0" />
+              </div>
+              <div>
+                <small>Recorte Fin (s)</small>
+                <input type="number" id="audioClipTrimEnd" class="input-num" min="0.1" step="0.1" value="5" />
+              </div>
+            </div>
+          </div>
+
+          <div class="control-block">
+            <label class="block-title">3. Pista de Música de Fondo Global</label>
             <div id="bgMusicStatus" class="empty-hint" style="margin-bottom:10px;">
               Sin música cargada. Usa el botón "Importar Música" o genera una pista ambiental.
             </div>
@@ -654,8 +865,19 @@
 
     <!-- PANEL CENTRAL: VISTA PREVIA DEL VIDEO -->
     <section class="preview-stage">
+      <!-- BARRA FLOTANTE DE ZOOM DE LA MESA DE TRABAJO (No altera el tamaño real del video) -->
+      <div class="workspace-zoom-bar" id="workspaceZoomBar">
+        <span class="ws-zoom-label">🔍 Mesa de Trabajo:</span>
+        <button id="btnWsZoomOut" class="btn btn-icon btn-xs" title="Alejar mesa de trabajo (Zoom - sin editar tamaño del video)">−</button>
+        <span id="wsZoomBadge" class="value-pill">100%</span>
+        <button id="btnWsZoomIn" class="btn btn-icon btn-xs" title="Acercar mesa de trabajo (Zoom + sin editar tamaño del video)">+</button>
+        <button id="btnWsZoomReset" class="btn btn-ghost btn-xs" title="Restablecer vista de la mesa al 100%">Ajustar (100%)</button>
+      </div>
+
       <div class="canvas-Viewport" id="canvasViewport">
-        <canvas id="previewCanvas" width="720" height="1280"></canvas>
+        <div class="canvas-zoom-stage" id="canvasZoomStage">
+          <canvas id="previewCanvas" width="720" height="1280"></canvas>
+        </div>
         <div id="canvasOverlayHint" class="canvas-overlay-hint">
           <div class="hint-card">
             <img src="logo.png" alt="Klip Maker Logo" class="welcome-logo-img" />
@@ -731,6 +953,10 @@
           <span>Duplicar (D)</span>
         </button>
 
+        <button id="btnToolbarDetachAudio" class="btn btn-tool" title="Separar el audio del video seleccionado hacia la línea de Audio independiente">
+          🔊 <span>Separar Audio</span>
+        </button>
+
         <div class="divider-v"></div>
 
         <button id="btnMoveLeft" class="btn btn-tool" title="Mover segmento a la izquierda">
@@ -778,7 +1004,7 @@
         <div class="track-header ruler-corner">TIEMPO</div>
         <div class="track-header"><span>🔤 Títulos / Texto</span></div>
         <div class="track-header"><span>🎬 Video Principal</span></div>
-        <div class="track-header"><span>🎵 Música / Audio</span></div>
+        <div class="track-header"><span>🔊 Audio / Sonidos</span></div>
       </div>
 
       <div class="timeline-scroll-area" id="timelineScrollArea">
